@@ -18,7 +18,7 @@ pipeline {
         stage('Build & Test') {
             steps {
                 script {
-                    def javaHome = tool 'jdk17'
+                    def javaHome = tool 'jdk21'
                     withEnv([
                         "JAVA_HOME=${javaHome}",
                         "PATH=${javaHome}\\bin;${env.PATH}"
