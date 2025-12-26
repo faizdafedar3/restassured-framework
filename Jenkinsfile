@@ -18,7 +18,7 @@ pipeline {
             steps {
                 bat '''
                     echo =========================
-                    echo BUILD & TEST STARTED
+                    echo BUILD AND TEST STARTED
                     echo =========================
 
                     java -version
