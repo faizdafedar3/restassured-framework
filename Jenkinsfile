@@ -24,11 +24,12 @@ pipeline {
         stage('Publish TestNG Report') {
             steps {
                 publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
                     reportDir: 'test-output',
                     reportFiles: 'index.html',
-                    reportName: 'TestNG Report',
-                    keepAll: true,
-                    alwaysLinkToLastBuild: true
+                    reportName: 'TestNG Report'
                 ])
             }
         }
@@ -36,11 +37,12 @@ pipeline {
         stage('Publish Extent Report') {
             steps {
                 publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
                     reportDir: 'test-output',
                     reportFiles: 'ExtentReport.html',
-                    reportName: 'Extent Report',
-                    keepAll: true,
-                    alwaysLinkToLastBuild: true
+                    reportName: 'Extent Report'
                 ])
             }
         }
