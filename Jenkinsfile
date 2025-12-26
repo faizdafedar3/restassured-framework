@@ -3,14 +3,15 @@ pipeline {
 
     tools {
         maven 'Maven'
-        jdk 'jdk17'
+        jdk 'JDK'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git 'https://github.com/faizdafedar3/restassured-framework.git'
+                git branch: 'main',
+                    url: 'https://github.com/faizdafedar3/restassured-framework.git'
             }
         }
 
@@ -22,19 +23,24 @@ pipeline {
 
         stage('Publish TestNG Report') {
             steps {
-                publishTestNGResults testResultsPattern: '**/testng-results.xml'
+                publishHTML([
+                    reportDir: 'test-output',
+                    reportFiles: 'index.html',
+                    reportName: 'TestNG Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true
+                ])
             }
         }
 
         stage('Publish Extent Report') {
             steps {
                 publishHTML([
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
                     reportDir: 'test-output',
                     reportFiles: 'ExtentReport.html',
-                    reportName: 'Rest Assured API Report'
+                    reportName: 'Extent Report',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true
                 ])
             }
         }
