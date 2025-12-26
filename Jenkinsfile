@@ -1,12 +1,8 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'jdk21'
-        maven 'maven-3.9.1'
-    }
-
     stages {
+
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -16,16 +12,21 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                bat '''
+                script {
+                    def jdkHome = tool 'jdk21'
+                    def mvnHome = tool 'maven-3.9.1'
+
+                    bat """
                     echo =========================
-                    echo BUILD AND TEST STARTED
+                    echo USING JENKINS TOOLS ONLY
                     echo =========================
 
-                    java -version
-                    mvn -version
+                    "${jdkHome}\\bin\\java.exe" -version
+                    "${mvnHome}\\bin\\mvn.cmd" -version
 
-                    mvn clean test
-                '''
+                    "${mvnHome}\\bin\\mvn.cmd" clean test
+                    """
+                }
             }
         }
     }
