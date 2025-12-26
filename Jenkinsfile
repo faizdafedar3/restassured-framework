@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     tools {
-        // MUST match names from Global Tool Configuration
         jdk 'jdk21'
         maven 'maven-3.9.1'
     }
@@ -20,9 +19,13 @@ pipeline {
             steps {
                 bat '''
                 echo =========================
-                echo JAVA_HOME=%JAVA_HOME%
+                echo FIXING JAVA PATH
                 echo =========================
 
+                set JAVA_HOME=%JAVA_HOME%
+                set PATH=%JAVA_HOME%\\bin;%PATH%
+
+                where java
                 java -version
                 mvn -version
 
