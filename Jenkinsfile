@@ -6,6 +6,11 @@ pipeline {
         jdk 'jdk17'
     }
 
+    environment {
+        JAVA_HOME = tool name: 'jdk17', type: 'hudson.model.JDK'
+        PATH = "${JAVA_HOME}\\bin;${env.PATH}"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -17,6 +22,8 @@ pipeline {
 
         stage('Build & Test') {
             steps {
+                bat 'java -version'
+                bat 'mvn -version'
                 bat 'mvn clean test'
             }
         }
