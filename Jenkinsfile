@@ -13,17 +13,14 @@ pipeline {
         stage('Build & Test') {
             steps {
                 script {
-                    def jdkHome = tool 'jdk21'
                     def mvnHome = tool 'maven-3.9.1'
 
                     bat """
                     echo =========================
-                    echo USING JENKINS TOOLS ONLY
+                    echo RUNNING MAVEN TESTS
                     echo =========================
 
-                    "${jdkHome}\\bin\\java.exe" -version
                     "${mvnHome}\\bin\\mvn.cmd" -version
-
                     "${mvnHome}\\bin\\mvn.cmd" clean test
                     """
                 }
