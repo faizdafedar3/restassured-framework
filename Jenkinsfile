@@ -7,7 +7,6 @@ pipeline {
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: 'main',
@@ -18,18 +17,14 @@ pipeline {
         stage('Build & Test') {
             steps {
                 bat '''
-                echo =========================
-                echo FIXING JAVA PATH
-                echo =========================
+                    echo =========================
+                    echo BUILD & TEST STARTED
+                    echo =========================
 
-                set JAVA_HOME=%JAVA_HOME%
-                set PATH=%JAVA_HOME%\\bin;%PATH%
+                    java -version
+                    mvn -version
 
-                where java
-                java -version
-                mvn -version
-
-                mvn clean test
+                    mvn clean test
                 '''
             }
         }
