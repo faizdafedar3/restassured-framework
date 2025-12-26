@@ -1,30 +1,23 @@
 pipeline {
-
     agent any
 
+    tools {
+        jdk 'jdk21'
+        maven 'maven-3.9.1'
+    }
+
     stages {
-
-        stage('Checkout') {
+        stage('Build & Test') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/faizdafedar3/restassured-framework.git'
-            }
-        }
-
-        stage('Build & API Tests') {
-            steps {
-                bat '''
-                java -version
-                mvn -version
-                mvn clean test
-                '''
+                bat 'mvn -version'
+                bat 'mvn clean test'
             }
         }
     }
 
     post {
         always {
-            junit '**/target/surefire-reports/*.xml'
+            junit 'target/surefire-reports/*.xml'
         }
     }
 }
