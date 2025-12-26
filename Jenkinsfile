@@ -1,10 +1,6 @@
 pipeline {
-    agent any
 
-    tools {
-        maven 'Maven'
-        jdk 'jdk21'
-    }
+    agent any
 
     stages {
 
@@ -15,47 +11,20 @@ pipeline {
             }
         }
 
-        stage('Build & Test') {
+        stage('Build & API Tests') {
             steps {
-                script {
-                    def javaHome = tool 'jdk21'
-                    withEnv([
-                        "JAVA_HOME=${javaHome}",
-                        "PATH=${javaHome}\\bin;${env.PATH}"
-                    ]) {
-                        bat 'echo JAVA_HOME=%JAVA_HOME%'
-                        bat 'java -version'
-                        bat 'mvn -version'
-                        bat 'mvn clean test'
-                    }
-                }
+                bat '''
+                java -version
+                mvn -version
+                mvn clean test
+                '''
             }
         }
+    }
 
-        stage('Publish TestNG Report') {
-            steps {
-                publishHTML([
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'test-output',
-                    reportFiles: 'index.html',
-                    reportName: 'TestNG Report'
-                ])
-            }
-        }
-
-        stage('Publish Extent Report') {
-            steps {
-                publishHTML([
-                    allowMissing: false,
-                    alwaysLinkToLastBuild: true,
-                    keepAll: true,
-                    reportDir: 'test-output',
-                    reportFiles: 'ExtentReport.html',
-                    reportName: 'Extent Report'
-                ])
-            }
+    post {
+        always {
+            junit '**/target/surefire-reports/*.xml'
         }
     }
 }
