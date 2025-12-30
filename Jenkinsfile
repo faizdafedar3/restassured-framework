@@ -2,8 +2,12 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk21'
         maven 'maven-3.9.1'
+    }
+
+    environment {
+        JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.9.10-hotspot'
+        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
     stages {
@@ -14,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Verify Tools') {
+        stage('Verify Java & Maven') {
             steps {
                 bat '''
                 echo JAVA_HOME=%JAVA_HOME%
