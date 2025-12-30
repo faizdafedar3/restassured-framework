@@ -1,28 +1,48 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'maven-3.9.1'
+        jdk 'jdk21'
+    }
+
+    parameters {
+        string(
+            name: 'TAGS',
+            defaultValue: '',
+            description: 'Cucumber tags (optional, example: @smoke)'
+        )
+    }
+
     stages {
 
         stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/faizdafedar3/restassured-framework.git'
+                checkout scm
+            }
+        }
+
+        stage('Verify Tools') {
+            steps {
+                bat 'java -version'
+                bat 'mvn -version'
             }
         }
 
         stage('Build & Test') {
             steps {
                 script {
-                    def mvnHome = tool 'maven-3.9.1'
-
-                    bat """
-                    echo =========================
-                    echo RUNNING MAVEN TESTS
-                    echo =========================
-
-                    "${mvnHome}\\bin\\mvn.cmd" -version
-                    "${mvnHome}\\bin\\mvn.cmd" clean test
-                    """
+                    if (fileExists('src/test/resources/features')) {
+                        echo 'Cucumber project detected'
+                        if (params.TAGS?.trim()) {
+                            bat "mvn clean test -Dcucumber.filter.tags=${params.TAGS}"
+                        } else {
+                            bat "mvn clean test"
+                        }
+                    } else {
+                        echo 'Selenium / RestAssured project detected'
+                        bat 'mvn clean test'
+                    }
                 }
             }
         }
@@ -30,8 +50,13 @@ pipeline {
 
     post {
         always {
-            junit allowEmptyResults: true,
-                  testResults: 'target/surefire-reports/*.xml'
+            echo 'Pipeline execution completed'
+        }
+        success {
+            echo 'BUILD SUCCESS'
+        }
+        failure {
+            echo 'BUILD FAILED'
         }
     }
 }
